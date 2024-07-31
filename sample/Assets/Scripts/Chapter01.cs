@@ -24,6 +24,7 @@ public class Chapter01 : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		// 마우스 좌클릭일 때 && 마우스 포인터가 특정 EventSystem 관련 UI용 GameObject 위에 없을 때
 		if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) {
 			Debug.Log (string.Format("mousePosition ({0:f}, {1:f})", Input.mousePosition.x, Input.mousePosition.y));
 
@@ -38,11 +39,14 @@ public class Chapter01 : MonoBehaviour {
 			buttonDownTime = Time.time;
 		}
 
+		// 캡슐을 z축을 기준으로 회전
 		capsule.transform.eulerAngles
 			= new Vector3(0, 0, Mathf.LerpAngle(capsule.transform.eulerAngles.z, targetAngle, Time.deltaTime * capsuleRotationSpeed));
+		// 현재 캡슐의 각도, 목표 각도, 메서드 1회 실행 시 진행되는 값 * 회전 속도
 
 		if (sphere != null) {
-			sphere.transform.position = new Vector3(sphere.transform.position.x + (capsule.transform.position.x - sphere.transform.position.x) * Time.deltaTime * sphereMagnitudeX,
+			sphere.transform.position = new Vector3(
+				sphere.transform.position.x + (capsule.transform.position.x - sphere.transform.position.x) * Time.deltaTime * sphereMagnitudeX,
 				Mathf.Abs(Mathf.Sin ((Time.time - buttonDownTime) * (Mathf.PI * 2) * sphereFrequency) * sphereMagnitudeY),
 			    0
 			);
@@ -50,10 +54,10 @@ public class Chapter01 : MonoBehaviour {
 	}
 
 	float GetRotationAngleByTargetPosition(Vector3 mousePosition) {
-		Vector3 selfScreenPoint = Camera.main.WorldToScreenPoint(capsule.transform.position);
+		Vector3 selfScreenPoint = Camera.main.WorldToScreenPoint(capsule.transform.position); // 캡슐의 월드 좌표를 스크린 좌표로 변환
 		Vector3 diff = mousePosition - selfScreenPoint;
 		
-		float angle = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+		float angle = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg; // Mathf.Rad2Deg 라디안에서 도수로 변환
 
 		Debug.Log (string.Format("angle: {0:f}", angle));
 

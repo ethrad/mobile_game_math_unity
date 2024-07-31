@@ -18,20 +18,22 @@ public class Chapter02 : MonoBehaviour {
 	{
 		public float _radius, _azimuth, _elevation;
 
-		public float radius
+		public float radius // 구면좌표의 반지름
 		{ 
 			get { return _radius; }
 			private set
 			{
+				// 값을 최소 최대 범위 안으로 제한
 				_radius = Mathf.Clamp( value, _minRadius, _maxRadius );
 			}
 		}
 
-		public float azimuth
+		public float azimuth // 방위각
 		{ 
 			get { return _azimuth; }
 			private set
 			{ 
+				// 최댓값에 도달하면 다시 최솟값으로 돌아간다 (또는 그 반대)
 				_azimuth = Mathf.Repeat( value, _maxAzimuth - _minAzimuth ); 
 			}
 		}
@@ -62,6 +64,7 @@ public class Chapter02 : MonoBehaviour {
 		
 		public SphericalCoordinates(){}
 		
+		// 카메라의 직교좌표 수치를 받아 구면좌표의 초깃값으로 설정한다
 		public SphericalCoordinates(Vector3 cartesianCoordinate)
 		{
 			_minAzimuth = Mathf.Deg2Rad * minAzimuth;
@@ -70,12 +73,12 @@ public class Chapter02 : MonoBehaviour {
 			_minElevation = Mathf.Deg2Rad * minElevation;
 			_maxElevation = Mathf.Deg2Rad * maxElevation;
 
-			radius = cartesianCoordinate.magnitude;
+			radius = cartesianCoordinate.magnitude; // 카메라와 원점의 거리
 			azimuth = Mathf.Atan2(cartesianCoordinate.z, cartesianCoordinate.x);
 			elevation = Mathf.Asin(cartesianCoordinate.y / radius);
 		}
 		
-		public Vector3 toCartesian
+		public Vector3 toCartesian // 구면좌표에서 직교좌표로의 변환
 		{
 			get
 			{
@@ -117,7 +120,8 @@ public class Chapter02 : MonoBehaviour {
 		h = kh * kh > mh * mh ? kh : mh;
 		v = kv * kv > mv * mv ? kv : mv;
 		
-		if (h * h > Mathf.Epsilon || v * v > Mathf.Epsilon) {
+		if (h * h > Mathf.Epsilon || v * v > Mathf.Epsilon) { // 수치의 절댓값이 0이 아님을 확인하기 위함
+			// float형끼리 비교할 경우에는 == 연산자를 사용하지 않고 Mathf.Approximately를 사용해서 모호한 비교를 할 것
 			transform.position
 				= sphericalCoordinates.Rotate(h * rotateSpeed * Time.deltaTime, v * rotateSpeed * Time.deltaTime).toCartesian + pivot.position;
 		}
@@ -127,7 +131,7 @@ public class Chapter02 : MonoBehaviour {
 			transform.position = sphericalCoordinates.TranslateRadius(sw * Time.deltaTime * scrollSpeed).toCartesian + pivot.position;
 		}
 
-		transform.LookAt(pivot.position);
+		transform.LookAt(pivot.position); // pivot으로 설정한 게임 오브젝트 쪽으로 이 스크립트가 추가된 오브젝트의 방향을 돌린다
 	}
 }
 
