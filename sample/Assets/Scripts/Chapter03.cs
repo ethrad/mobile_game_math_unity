@@ -106,7 +106,9 @@ public class Chapter03 : MonoBehaviour {
 		sphericalCoordinates = new SphericalCoordinates(transform.position);
 		transform.position = sphericalCoordinates.toCartesian + pivot.position;
 
-		Mesh mesh = pivot.gameObject.GetComponent<MeshFilter>().mesh;
+		Mesh mesh = pivot.gameObject.GetComponent<MeshFilter>().mesh; // pivot은 큐브 게임 오브젝트이다
+		// Mesh Filter는 에셋에서 메쉬를 취득하여 화면 상에서 렌더링하기 위해 Mesh Renderer에 전달한다
+		// Mesh Filter는 유니티 에셋 중 Mesh만 참조할 수 있다.
 		for (int i = 0; i < mesh.vertices.Length; i++)
 		{
 			if (triangleVertices.Count < 3) {
